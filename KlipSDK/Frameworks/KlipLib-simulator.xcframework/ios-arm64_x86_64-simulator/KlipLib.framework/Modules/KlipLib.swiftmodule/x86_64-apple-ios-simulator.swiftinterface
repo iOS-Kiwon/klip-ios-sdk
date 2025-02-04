@@ -1,0 +1,293 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.10 (swiftlang-5.10.0.13 clang-1500.3.9.4)
+// swift-module-flags: -target x86_64-apple-ios12.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-bare-slash-regex -module-name KlipLib
+import Foundation
+import Swift
+import UIKit
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+public enum KlipCallback<Value> {
+  case success(Value)
+  case failure(KlipLib.ResponseErrorModel?)
+}
+public struct BAppInfo : Swift.Codable {
+  public let name: Swift.String
+  public let callback: KlipLib.BAppDeepLinkCB?
+  public init(name: Swift.String, callback: KlipLib.BAppDeepLinkCB? = nil)
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct GetCardListRequest : Swift.Codable {
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public enum ResponseType {
+  case success
+  case failure
+  public static func == (a: KlipLib.ResponseType, b: KlipLib.ResponseType) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public struct KlipResponse {
+}
+public struct CardListResponse : Swift.Codable {
+  public let name: Swift.String
+  public let symbolImg: Swift.String
+  public let cards: [KlipLib.Card]
+  public let nextCursor: Swift.String
+  public func toJson() throws -> Foundation.Data
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+@_hasMissingDesignatedInitializers final public class KlipSDK {
+  public static let shared: KlipLib.KlipSDK
+  final public func setEnvironment(env: KlipLib.KlipEnvironment)
+  final public func getEnvironment() -> KlipLib.KlipEnvironment
+  final public func prepare(request: any KlipLib.KlipRequest, bappInfo: KlipLib.BAppInfo, completion: @escaping (KlipLib.KlipCallback<KlipLib.KlipTxResponse>) -> Swift.Void)
+  final public func request(requestKey: Swift.String)
+  final public func getResult(requestKey: Swift.String, completion: @escaping (KlipLib.KlipCallback<KlipLib.KlipTxResponse>) -> Swift.Void)
+  final public func getCardList(cardAddress: Swift.String, userAddress: Swift.String, cursor: Swift.String?, completion: @escaping (KlipLib.KlipCallback<KlipLib.CardListResponse>) -> Swift.Void)
+  @objc deinit
+}
+public enum KlipEnvironment {
+  case dev
+  case qa
+  case stg
+  case prod
+  public static func == (a: KlipLib.KlipEnvironment, b: KlipLib.KlipEnvironment) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public typealias Parameters = [Swift.String : Any]
+public typealias HTTPHeader = [KlipLib.HTTPHeaderField : Swift.String]
+public protocol KlipServiceable {
+  var url: Swift.String { get }
+  var path: Swift.String { get }
+  var method: KlipLib.HTTPMethod { get }
+  var header: KlipLib.HTTPHeader? { get }
+  var query: KlipLib.Parameters? { get }
+  var body: Foundation.Data? { get }
+  var encodingType: KlipLib.EncodingType { get }
+  func request(urlRequest: inout Foundation.URLRequest, quary: KlipLib.Parameters?, body: Foundation.Data?, encodingType: KlipLib.EncodingType)
+}
+public enum HTTPMethod : Swift.String {
+  case get
+  case post
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public enum HTTPHeaderField : Swift.String {
+  case authentication
+  case contentType
+  case acceptType
+  case acceptEncoding
+  case contentDisposition
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public enum ContentType : Swift.String {
+  case json
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public struct KlipResponseErrorModel : Swift.Codable {
+  public let code: Swift.Int
+  public let err: Swift.String
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct ResponseErrorModel : Swift.Codable {
+  public let errorCode: Swift.Int
+  public let errorMsg: Swift.String
+  public let httpStatus: Swift.Int
+  public init(errorCode: Swift.Int, errorMsg: Swift.String, httpStatus: Swift.Int)
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public enum KlipClientError : Swift.Int, Swift.Error {
+  case clientErrorCode
+  case coreParameterMissing
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public enum KlipServerError : Swift.Int, Swift.Error {
+  case requestKeyDoseNotExist
+  case requestKeyIsExpired
+  case invalidRequestType
+  case executeContractCountDailyLimitExceeded
+  case bappNameIsRequired
+  case invalidTransaction
+  case invalidToAddress
+  case invalidAmount
+  case invalidContract
+  case invalidCardId
+  case invalidAbi
+  case invalidParams
+  case invalidValue
+  case unknownRequestType
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public enum EncodingType {
+  case query
+  case body
+  case queryAndBody
+  public static func == (a: KlipLib.EncodingType, b: KlipLib.EncodingType) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum PrepareType : Swift.String {
+  case auth
+  case sendKlay
+  case sendFT
+  case sendCard
+  case contractExecution
+  case signMessage
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public struct Card : Swift.Codable {
+  public let createdAt: Swift.Int
+  public let updatedAt: Swift.Int
+  public let owner: Swift.String
+  public let sender: Swift.String
+  public let cardId: Swift.Int
+  public let cardUri: Swift.String
+  public let transactionHash: Swift.String
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public typealias DataCompletion = (_ data: Foundation.Data?, _ error: KlipLib.ResponseErrorModel?) -> Swift.Void
+public typealias JSONCompletion = (_ rawJSON: Swift.String?, _ error: KlipLib.ResponseErrorModel?) -> Swift.Void
+public class KlipRemote {
+  public init(service: any KlipLib.KlipServiceable)
+  @discardableResult
+  public func request(completion: @escaping KlipLib.DataCompletion) -> Foundation.URLSessionDataTask
+  @objc deinit
+}
+public struct KlipTxResponse : Swift.Codable {
+  public let requestKey: Swift.String
+  public let status: Swift.String
+  public let expirationTime: Foundation.TimeInterval
+  public var result: KlipLib.PrepareResult?
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct BAppDeepLinkCB : Swift.Codable {
+  public let success: Swift.String?
+  public let fail: Swift.String?
+  public init(successURL: Swift.String? = nil, failURL: Swift.String? = nil)
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public protocol KlipRequest : Swift.Decodable, Swift.Encodable {
+}
+public struct AuthRequest : KlipLib.KlipRequest {
+  public init()
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct KlayTxRequest : KlipLib.KlipRequest {
+  public let to: Swift.String
+  public let amount: Swift.String
+  public let from: Swift.String?
+  public init(to: Swift.String, amount: Swift.String, from: Swift.String? = nil)
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct TokenTxRequest : KlipLib.KlipRequest {
+  public let to: Swift.String
+  public let amount: Swift.String
+  public let contract: Swift.String
+  public let from: Swift.String?
+  public init(to: Swift.String, amount: Swift.String, contract: Swift.String, from: Swift.String? = nil)
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct CardTxRequest : KlipLib.KlipRequest {
+  public let to: Swift.String
+  public let contract: Swift.String
+  public let cardId: Swift.String
+  public let from: Swift.String?
+  public init(to: Swift.String, contract: Swift.String, cardId: Swift.String, from: Swift.String? = nil)
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct ContractTxRequest : KlipLib.KlipRequest {
+  public let to: Swift.String
+  public let value: Swift.String
+  public let abi: Swift.String
+  public let params: Swift.String
+  public let from: Swift.String?
+  public init(to: Swift.String, value: Swift.String, abi: Swift.String, params: Swift.String, from: Swift.String? = nil)
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct SignMessageRequest : KlipLib.KlipRequest {
+  public let value: Swift.String
+  public let from: Swift.String?
+  public init(value: Swift.String, from: Swift.String? = nil)
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct GetResultRequest : Swift.Codable {
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+public struct PrepareResult : Swift.Codable {
+  public var txHash: Swift.String?
+  public var status: Swift.String?
+  public var klaytnAddress: Swift.String?
+  public var signature: Swift.String?
+  public func encode(to encoder: any Swift.Encoder) throws
+  public init(from decoder: any Swift.Decoder) throws
+}
+extension KlipLib.ResponseType : Swift.Equatable {}
+extension KlipLib.ResponseType : Swift.Hashable {}
+extension KlipLib.KlipEnvironment : Swift.Equatable {}
+extension KlipLib.KlipEnvironment : Swift.Hashable {}
+extension KlipLib.HTTPMethod : Swift.Equatable {}
+extension KlipLib.HTTPMethod : Swift.Hashable {}
+extension KlipLib.HTTPMethod : Swift.RawRepresentable {}
+extension KlipLib.HTTPHeaderField : Swift.Equatable {}
+extension KlipLib.HTTPHeaderField : Swift.Hashable {}
+extension KlipLib.HTTPHeaderField : Swift.RawRepresentable {}
+extension KlipLib.ContentType : Swift.Equatable {}
+extension KlipLib.ContentType : Swift.Hashable {}
+extension KlipLib.ContentType : Swift.RawRepresentable {}
+extension KlipLib.KlipClientError : Swift.Equatable {}
+extension KlipLib.KlipClientError : Swift.Hashable {}
+extension KlipLib.KlipClientError : Swift.RawRepresentable {}
+extension KlipLib.KlipServerError : Swift.Equatable {}
+extension KlipLib.KlipServerError : Swift.Hashable {}
+extension KlipLib.KlipServerError : Swift.RawRepresentable {}
+extension KlipLib.EncodingType : Swift.Equatable {}
+extension KlipLib.EncodingType : Swift.Hashable {}
+extension KlipLib.PrepareType : Swift.Equatable {}
+extension KlipLib.PrepareType : Swift.Hashable {}
+extension KlipLib.PrepareType : Swift.RawRepresentable {}

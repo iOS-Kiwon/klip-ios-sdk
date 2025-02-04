@@ -1,0 +1,4 @@
+framework module KlipLib {
+  header "KlipLib-Swift.h"
+  requires objc
+}
